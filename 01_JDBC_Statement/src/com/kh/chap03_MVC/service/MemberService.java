@@ -1,6 +1,12 @@
 package com.kh.chap03_MVC.service;
 
+import static com.kh.common.template.JDBCTemplate.close;
+import static com.kh.common.template.JDBCTemplate.commit;
+import static com.kh.common.template.JDBCTemplate.getConnection;
+import static com.kh.common.template.JDBCTemplate.rollback;
+
 import java.sql.Connection;
+import java.util.List;
 
 import com.kh.chap03_MVC.model.dao.MemberDAO;
 import com.kh.common.template.JDBCTemplate;
@@ -24,11 +30,90 @@ public class MemberService {
 		int result = mDao.insertMember(conn, m);
 
 		if (result > 0) {
-			JDBCTemplate.commit(conn);
+			commit(conn);
 		} else {
-			JDBCTemplate.rollback(conn);
+			rollback(conn);
 		}
-		JDBCTemplate.close(conn);
+		close(conn);
+
+		return result;
+	}
+
+	public List<Member> selectAll() {
+		// Connection 객체 생성
+		Connection conn = getConnection();
+		
+		List<Member> list = mDao.selectAll(conn);
+		
+		close(conn);
+
+		return list;
+
+	}
+
+	public Member selectByUserId(String userId) {
+		// Connection 객체 생성
+		Connection conn = getConnection();
+
+		Member m = mDao.selectByUserId(conn, userId);
+
+		close(conn);
+
+		return m;
+	}
+
+	public List<Member> selectByUserName(String keyword) {
+		// Connection 객체 생성
+		Connection conn = getConnection();
+
+		List<Member> list = mDao.selectByUserName(conn, keyword);
+
+		close(conn);
+
+		return list;
+
+	}
+
+	public int selectUser(String userId, String userPwd) {
+		// Connection 객체 생성
+		Connection conn = getConnection();
+
+		int result = mDao.selectUser(conn, userId, userPwd);
+
+		close(conn);
+
+		return result;
+	}
+
+	public int updateMember(Member m) {
+		// Connection 객체 생성
+		Connection conn = getConnection();
+
+		int result = mDao.updateMember(conn, m);
+
+		if (result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+
+		close(conn);
+
+		return result;
+	}
+
+	public int deleteMember(Member m) {
+
+		// Connection 객체 생성
+		Connection conn = getConnection();
+
+		int result = mDao.deleteMember(conn, m);
+
+		if (result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
 
 		return result;
 	}

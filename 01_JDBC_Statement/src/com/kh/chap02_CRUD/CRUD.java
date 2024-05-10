@@ -121,7 +121,7 @@ public class CRUD {
 			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "C##JDBC", "JDBC");
 			conn.setAutoCommit(false);
 
-			// 4) PreparedStatement 객체 생성
+			// 4) PreparedStatement 객체 생성 '?' 는 바인드변수
 			sql = "UPDATE MEMBER SET EMAIL = ? , PHONE = ? , ADDRESS = ? WHERE USER_ID = ?";
 			pstmt = conn.prepareStatement(sql);
 			

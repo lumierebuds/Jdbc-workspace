@@ -1,5 +1,7 @@
 package com.kh.chap03_MVC.controller;
 
+import java.util.List;
+
 import com.kh.chap03_MVC.service.MemberService;
 import com.kh.chap03_MVC.view.MemberView;
 import com.kh.model.vo.Member;
@@ -52,6 +54,118 @@ public class MemberController {
 			// 실패 메시지를 띄워즈는 화면을 호출
 			new MemberView().displayFail("회원 추가 실패");
 		}
+	}
+
+	/**
+	 * 사용자의 회원 전체 요청기능을 처리하는 메서드
+	 * 
+	 * @return
+	 */
+	public void selectAll() {
+
+		// 결과값을 담을 변수
+		List<Member> list = null;
+		list = mService.selectAll();
+
+		if (list.isEmpty()) {
+			new MemberView().displayNoData("조회결과가 없습니다.");
+		} else {
+			new MemberView().displayList(list);
+		}
+
+	}
+
+	/**
+	 * 사용자의 아이디로 검색요청을 해주는 메소드
+	 * 
+	 * @param userId : 사용자가 입력했던 검색하고자 하는 아이디
+	 */
+	public void selectByUserId(String userId) {
+		// 결과값을 담을 변수
+		// Member m = null;
+		Member m = mService.selectByUserId(userId);
+
+		if (m == null) {
+			new MemberView().displayNoData("조회결과 일치하는 Member가 없습니다.");
+		} else {
+			new MemberView().displayOne(m);
+		}
+	}
+
+	/**
+	 * 사용자의 이름 키워드로 검색요청해주는 메소드
+	 * 
+	 * @param keyword
+	 */
+	public void selectByUserName(String keyword) {
+		// 결과값을 담을 변수
+		List<Member> list = null;
+		list = mService.selectByUserName(keyword);
+
+		if (list.isEmpty()) {
+			new MemberView().displayNoData("조회결과 일치하는 Member가 없습니다.");
+		} else {
+			new MemberView().displayList(list);
+		}
+
+	}
+
+	public void updateMember(String userId, String userPwd, String email, String phone, String address) {
+		// 가공처리
+		Member m = new Member();
+		m.setUserId(userId);
+		m.setUserPwd(userPwd);
+		m.setEmail(email);
+		m.setPhone(phone);
+		m.setAddress(address);
+
+		// 회원의 아이디와 비밀번호를 가지고 인증된 사용자인지 검사.
+		// SELECT * FROM MEMBER WHERE USER_ID=? AND USER_PWD=? AND STATUS = 'Y';
+		
+		int result = mService.selectUser(userId, userPwd);
+		
+		// 존재하는 회원
+		if (result > 0) {
+			// 회원정보 수정작업.
+			// UPDATE MEMBER SET 칼럼명 = ?, ... WHERE USER_ID = ?
+			result = mService.updateMember(m);
+
+			if (result > 0) { // 수정에 성공했으면
+				new MemberView().displaySuccess("회원정보 변경 성공");
+			} else {
+				new MemberView().displayFail("회원정보 변경 실패");
+			}
+
+		} else {
+			new MemberView().displayFail("존재하지 않는 회원입니다.");
+		}
+	}
+
+	public void deleteMember(String userId, String userPwd) {
+		// 가공처리
+		Member m = new Member();
+		m.setUserId(userId);
+		m.setUserPwd(userPwd);
+
+		int result = mService.selectUser(userId, userPwd);
+
+		// 존재하는 회원
+
+		if (result > 0) {
+
+			result = mService.deleteMember(m);
+			if (result > 0) {
+				new MemberView().displaySuccess("회원탈퇴 성공");
+			} else {
+				new MemberView().displayFail("회원 탈퇴 실패");
+			}
+
+		} else {
+
+			new MemberView().displayFail("존재하지 않는 회원입니다.");
+
+		}
+
 	}
 
 }
