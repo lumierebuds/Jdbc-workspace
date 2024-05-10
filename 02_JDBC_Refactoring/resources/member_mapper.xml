@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"> <!-- 컴파일 에러를 잡아주는 구문 -->
+<properties>
+
+	<comment>member_mapper</comment>
+	
+	<entry key ="insertMember"> <!-- 회원가입 쿼리문을 대표하는 키값 -->
+		INSERT INTO
+		MEMBER VALUES(
+			SEQ_UNO.NEXTVAL, ?,?,?,?,?,?,?,?, SYSDATE, SYSDATE, DEFAULT
+		)
+	</entry>
+	
+</properties>
